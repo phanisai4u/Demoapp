@@ -1,7 +1,10 @@
 var express = require('express');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/Demoapp');
+  
+mongoose.connect('mongodb://root:password@ds015962.mlab.com:15962/phanidb');
+
+//mongoose.connect('mongodb://localhost/Demoapp');
 
 var app = express();
 
@@ -23,6 +26,7 @@ var Product = new Schema({
     description: { type: String, required: true },
     
 });
+
 var ProductModel = mongoose.model('Product', Product);
 
 
@@ -44,7 +48,7 @@ app.use('/users', users);
 
 
 
-app.post('/api/products', function (req, res) {
+app.post('/api/products', function (req, res,next) {
   var product;
   console.log("POST: ");
   console.log(req.body);
@@ -54,15 +58,15 @@ app.post('/api/products', function (req, res) {
   });
   product.save(function (err) {
     if (!err) {
-      return console.log("created");
+      return res.send(product)
+
     } else {
-      return console.log(err);
+      return res.send(err);
     }
   });
-res.send(product)
 });
 
-app.get('/api/products', function (req, res) {
+app.get('/api/products', function (req, res,next) {
   return ProductModel.find(function (err, products) {
     if (!err) {
       return res.send(products);
