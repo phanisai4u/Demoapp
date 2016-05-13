@@ -1,6 +1,8 @@
+var User = require('../models/usermodel') //require('./models/usermodel.js');
+
 var express = require('express');
 var router = express.Router();
-//var User = require('./models/usermodel');
+
 
 /* GET users listing. */
 //var chris = new User({
@@ -12,6 +14,26 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
+
+router.post('/create', function (req, res,next) {
+  var newuser;
+  console.log("POST: ");
+  console.log(req.body);
+  newuser = new User({
+    email: req.body.email,
+    username: req.body.username,
+    password : req.body.password
+  });
+  newuser.save(function (err) {
+    if (!err) {
+      return res.send(newuser)
+
+    } else {
+      return res.send(err);
+    }
+  });
+});
+
 
 //router.get('/newuser', function(req, res, next) {
 //    

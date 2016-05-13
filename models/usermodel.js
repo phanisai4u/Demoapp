@@ -9,12 +9,14 @@ var userSchema = new Schema({
   name: String,
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  admin: Boolean,
-  location: String,
-  meta: {
-    age: Number,
-    website: String
-  },
+  email: { type: String, required: true, unique: true },
+  fname: String,
+  lname: String,
+  age: Number,
+  dob: Date,
+  gender: String,
+  height: String,
+  activityLevel: String,
   created_at: Date,
   updated_at: Date
 });

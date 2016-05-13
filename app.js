@@ -1,8 +1,9 @@
 var express = require('express');
+var User = require('./models/usermodel') 
 
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
   
-mongoose.connect('mongodb://root:password@ds015962.mlab.com:15962/phanidb');
+//mongoose.connect('mongodb://root:password@ds015962.mlab.com:15962/phanidb');
 
 //mongoose.connect('mongodb://localhost/Demoapp');
 
@@ -20,14 +21,14 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var Schema = mongoose.Schema;
-var Product = new Schema({
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    
-});
-
-var ProductModel = mongoose.model('Product', Product);
+//var Schema = mongoose.Schema;
+//var Product = new Schema({
+//    title: { type: String, required: true },
+//    description: { type: String, required: true },
+//    
+//});
+//
+//var ProductModel = mongoose.model('Product', Product);
 
 
 // view engine setup
@@ -48,33 +49,33 @@ app.use('/users', users);
 
 
 
-app.post('/api/products', function (req, res,next) {
-  var product;
-  console.log("POST: ");
-  console.log(req.body);
-  product = new ProductModel({
-    title: req.body.title,
-    description: req.body.description,
-  });
-  product.save(function (err) {
-    if (!err) {
-      return res.send(product)
-
-    } else {
-      return res.send(err);
-    }
-  });
-});
-
-app.get('/api/products', function (req, res,next) {
-  return ProductModel.find(function (err, products) {
-    if (!err) {
-      return res.send(products);
-    } else {
-      return console.log(err);
-    }
-  });
-});
+//app.post('/api/products', function (req, res,next) {
+//  var product;
+//  console.log("POST: ");
+//  console.log(req.body);
+//  product = new ProductModel({
+//    title: req.body.title,
+//    description: req.body.description,
+//  });
+//  product.save(function (err) {
+//    if (!err) {
+//      return res.send(product)
+//
+//    } else {
+//      return res.send(err);
+//    }
+//  });
+//});
+//
+//app.get('/api/products', function (req, res,next) {
+//  return ProductModel.find(function (err, products) {
+//    if (!err) {
+//      return res.send(products);
+//    } else {
+//      return console.log(err);
+//    }
+//  });
+//});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
