@@ -1,6 +1,7 @@
 // grab the things we need
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/Demoapp');
+//mongoose.connect('mongodb://localhost/Demoapp');
+mongoose.connect('mongodb://root:password@ds015962.mlab.com:15962/phanidb');
 
 var Schema = mongoose.Schema;
 
@@ -13,7 +14,7 @@ var userSchema = new Schema({
   fname: String,
   lname: String,
   age: Number,
-  dob: Date,
+  dob: String,
   gender: String,
   height: String,
   activityLevel: String,
@@ -23,6 +24,21 @@ var userSchema = new Schema({
 
 // the schema is useless so far
 // we need to create a model using it
+
+userSchema.pre('save', function(next) {
+  // get the current date
+  var currentDate = new Date();
+  
+  // change the updated_at field to current date
+  this.updated_at = currentDate;
+
+  // if created_at doesn't exist, add to that field
+  if (!this.created_at)
+    this.created_at = currentDate;
+
+  next();
+})
+
 var User = mongoose.model('User', userSchema);
 
 // make this available to our users in our Node applications
