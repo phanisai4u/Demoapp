@@ -26,10 +26,16 @@ router.post('/create', function (req, res,next) {
   });
   newuser.save(function (err) {
     if (!err) {
-      return res.send(newuser)
+        newuser = newuser.toObject(); // swap for a plain javascript object instance
+               delete newuser["_id"];
+               delete newuser["__v"];
+               delete newuser["password"];
+               var updateduser = {user:newuser,"msg":"sucess",status:1};
+               console.log(updateduser);
+               return res.send(updateduser);
 
     } else {
-      return res.send(err);
+      return res.send({"msg":"user alredy exits",status:0});
     }
   });
 });
@@ -37,54 +43,76 @@ router.post('/create', function (req, res,next) {
 router.post('/login', function (req, res,next) {
 console.log("POST: ");
   console.log(req.body);
-    User.find({ username: req.body.email }, function(err, user) {
-       if (err) throw err;
-        console.log(user);
-        var user1 = user[0];
-        if (user1.password === req.body.password){
-           return res.send(user1); 
-        }else{
-            return res.send('invalid password');
-        }
-         
+  var loginquery  = User.findOne({ username: req.body.email }).select('+password')
+        
+     loginquery.exec( function(err, user) {
+         if (!err) {
+            console.log(user);
+             if (user != null){
+            if (user.password === req.body.password){
+            user = user.toObject(); // swap for a plain javascript object instance
+               delete user["_id"];
+               delete user["__v"];
+               delete user["password"];
+              // delete user1["dob"];
+               var updateduser = {user:user,"msg":"sucess",status:1};
+               console.log(updateduser);
+                return res.send(updateduser);
+             }else{
+                return res.send({"msg":"invalid password",status:0});
+             }
+             }else{
+                return res.send({"msg":"invalid user",status:0});
+  
+             }
+         }else{
+         return res.send({"msg":"Error",status:0});
+         }
         });
 });
 
 router.post('/update', function (req, res,next) {
   console.log("POST: ");
   console.log(req.body);
-    User.find({ username: req.body.email }, function(err, user) {
-       if (err) throw err;
-        console.log(user);
-        var user1 = user[0];
-         user1.lname = req.body.lanme;
-         user1.fname = req.body.fname;
-         user1.dob = req.body.dob;
-         user1.age = req.body.age;
-         user1.email = req.body.email;
-         user1.gender =req.body.gender;
-         user1.height = req.body.height;
+   var query = User.findOne({ username: req.body.email })
+                         
+    query.exec( function(err, user) {
+        console.log(JSON.stringify(user))
+       if (!err) {
+         if (user != null){
 
-           user1.save(function (err) {
-            console.log(user1);
-
+         user.lname = req.body.lname;
+         user.fname = req.body.fname;
+         user.dob = req.body.dob;
+         user.age = req.body.age;
+         user.email = req.body.email;
+         user.gender =req.body.gender;
+         user.height = req.body.height;
+           user.save(function (err) {
             if (err) throw err;
-                return res.send(user1);
+               user = user.toObject(); // swap for a plain javascript object instance
+               delete user["_id"];
+               delete user["__v"];
+               delete user["password"];
+              // delete user1["dob"];
+               var updateduser = {user:user,"msg":"sucess",status:1};
+               console.log(updateduser);
+                return res.send(updateduser);
                });
+         }else{
+            return res.send({"msg":"invalid user",status:0});
+
+         }
+             
+        }else{
+            return res.send({"msg":"Error",status:0});
+  
+        }
         
         });
     
   
 });
-//router.get('/newuser', function(req, res, next) {
-//    
-//    chris.save(function(err) {
-//  if (err) throw err;
-//  res.send('User saved successfully!');
-//
-//  console.log('User saved successfully!');
-//});
-//    
-//});
+
 
 module.exports = router;
