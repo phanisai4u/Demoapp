@@ -88,6 +88,11 @@ router.post('/update', function (req, res,next) {
          user.email = req.body.email;
          user.gender =req.body.gender;
          user.height = req.body.height;
+         user.weight = req.body.weight;
+         user.fitnesslevel = req.body.fitnesslevel;
+         user.activityLevel = req.body.activityLevel;
+         user.picture = req.body.picture;
+             
            user.save(function (err) {
             if (err) throw err;
                user = user.toObject(); // swap for a plain javascript object instance

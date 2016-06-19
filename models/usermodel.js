@@ -16,10 +16,13 @@ var userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   fname: String,
   lname: String,
+  picture: String,
   age: Number,
   dob: String,
   gender: String,
   height: String,
+  weight: String,
+  fitnesslevel: String,
   activityLevel: String,
   created_at: Date,
   updated_at: Date
