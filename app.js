@@ -1,5 +1,7 @@
 var express = require('express');
-var User = require('./models/usermodel') 
+var User = require('./models/usermodel');
+
+//var Workouts = require('./models/workoutsmodel');
 
 //var mongoose = require('mongoose');
   
@@ -20,6 +22,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var workouts = require('./routes/workouts');
 
 //var Schema = mongoose.Schema;
 //var Product = new Schema({
@@ -45,6 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/workouts',workouts);
 
 
 
