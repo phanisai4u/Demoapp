@@ -23,6 +23,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var workouts = require('./routes/workouts');
+var exercies = require('./routes/exercie');
 
 //var Schema = mongoose.Schema;
 //var Product = new Schema({
@@ -49,6 +50,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 app.use('/workouts',workouts);
+app.use('/exercies',exercies);
+
 
 
 
