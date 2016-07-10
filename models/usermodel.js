@@ -12,8 +12,19 @@ var mongoose = require('../db');
 var Schema = mongoose.Schema;
 
 // create a schema
+var goalSchema = new Schema ({
+     type : String,
+     title : String,
+     cycles : String, 
+     days : String ,
+     calToBurn : String,
+     created_at: Date,
+     updated_at: Date
+
+});
+
 var userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
+  userId: { type: String, required: true, unique: true },
   password: { type: String, required: true ,select:false},
   email: { type: String, required: true, unique: true },
   fname: String,
@@ -26,6 +37,7 @@ var userSchema = new Schema({
   weight: String,
   fitnesslevel: String,
   activityLevel: String,
+  goals : [goalSchema],
   created_at: Date,
   updated_at: Date
 });
@@ -39,10 +51,13 @@ userSchema.pre('save', function(next) {
   
   // change the updated_at field to current date
   this.updated_at = currentDate;
+  
 
-  // if created_at doesn't exist, add to that field
-  if (!this.created_at)
+   // if created_at doesn't exist, add to that field
+ if (!this.created_at ) 
     this.created_at = currentDate;
+  
+    
 
   next();
 })

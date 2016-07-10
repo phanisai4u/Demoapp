@@ -33,10 +33,10 @@ workoutSchema.pre('save', function(next) {
   
   // change the updated_at field to current date
   this.updated_at = currentDate;
-  this.wid = String(Math.floor(100000 + Math.random() * 900000));
 
   // if created_at doesn't exist, add to that field
-  if (!this.created_at)
+  if (!this.created_at && !this.wid)
+    this.wid = String(Math.floor(100000 + Math.random() * 900000));
     this.created_at = currentDate;
 console.log("workout added");
   next();

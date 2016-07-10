@@ -2,6 +2,7 @@ var User = require('../models/usermodel') //require('./models/usermodel.js');
 
 var express = require('express');
 var router = express.Router();
+var shortid = require('shortid');
 
 
 /* GET users listing. */
@@ -14,14 +15,18 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
+function random (low, high) {
+    return Math.random() * (high - low) + low;
+}
 router.post('/create', function (req, res,next) {
   var newuser;
   console.log("POST: ");
   console.log(req.body);
   newuser = new User({
     email: req.body.email,
-    username: req.body.email,
+    userId : shortid.generate(),
     password : req.body.password
+    
   });
   newuser.save(function (err) {
     if (!err) {
@@ -34,6 +39,8 @@ router.post('/create', function (req, res,next) {
                return res.send(updateduser);
 
     } else {
+          console.log(err);
+
       return res.send({"msg":"user alredy exits",status:0});
     }
   });
@@ -42,12 +49,14 @@ router.post('/create', function (req, res,next) {
 router.post('/login', function (req, res,next) {
 console.log("POST: ");
   console.log(req.body);
-  var loginquery  = User.findOne({ username: req.body.email }).select('+password')
+  var loginquery  = User.findOne({ email: req.body.email }).select('+password')
         
      loginquery.exec( function(err, user) {
          if (!err) {
             console.log(user);
              if (user != null){
+                 console.log("+++++++++++++++++");
+            console.log(user.password + req.body.password);
             if (user.password === req.body.password){
             user = user.toObject(); // swap for a plain javascript object instance
                delete user["_id"];
@@ -73,10 +82,11 @@ console.log("POST: ");
 router.post('/update', function (req, res,next) {
   console.log("POST: ");
   console.log(req.body);
-   var query = User.findOne({ username: req.body.email })
+   var query = User.findOne({ userId: req.body.userId })
                          
     query.exec( function(err, user) {
-        console.log(JSON.stringify(user))
+        console.log ("update ...........")
+        //console.log(JSON.stringify(user))
        if (!err) {
          if (user != null){
 
@@ -88,11 +98,48 @@ router.post('/update', function (req, res,next) {
          user.gender =req.body.gender;
          user.height = req.body.height;
          user.weight = req.body.weight;
+         user.goals = req.body.goals;
          user.fitnesslevel = req.body.fitnesslevel;
          user.activityLevel = req.body.activityLevel;
          user.picture = req.body.picture;
              
            user.save(function (err) {
+            if (err) throw err;
+               user = user.toObject(); // swap for a plain javascript object instance
+               delete user["_id"];
+               delete user["__v"];
+               delete user["password"];
+              // delete user1["dob"];
+               var updateduser = {user:user,"msg":"sucess",status:1};
+               console.log(updateduser);
+                return res.send(updateduser);
+               });
+         }else{
+            return res.send({"msg":"invalid user",status:0});
+
+         }
+             
+        }else{
+            return res.send({"msg":"Error",status:0});
+  
+        }
+        
+        });
+    
+  
+});
+
+router.post('/addgoal', function (req, res,next) {
+  console.log("POST: ");
+  console.log(req.body);
+   var query = User.findOne({ userId: req.body.userId })
+                         
+    query.exec( function(err, user) {
+        console.log(JSON.stringify(user))
+       if (!err) {
+         if (user != null){
+         user.goals = req.body.goals;
+         user.save(function (err) {
             if (err) throw err;
                user = user.toObject(); // swap for a plain javascript object instance
                delete user["_id"];
