@@ -10,6 +10,9 @@ router.post('/add', function (req, res,next) {
   console.log(req.body);
   newExcercie = new Excercie({
     type : req.body.type,
+    subtype : req.body.subtype,
+    title : req.body.title,
+    media : req.body.media,
     discription :req.body.discription
   });
   newExcercie.save(function (err) {
@@ -62,16 +65,19 @@ router.post('/clearall', function (req, res,next) {
             }
         }
     );
-               
-
-        
-//     removeallExcerciesquery.exec( function(err) {
-//         if (!err) {
-//            return res.send({"msg":"sucess",status:1});
-//         }else{
-//         return res.send({"msg":"Error",status:0});
-//         }
-//        });
 });
-module.exports = router;
 
+router.post('/delete', function (req, res,next) {
+  console.log(req.body);
+  var removeExcerciesquery  = Excercie.remove({ exericeId: req.body.exericeId }, function(err) {
+            if (err) {
+                 return res.send({"msg":"Error",status:0});
+            } else {
+                 return res.send({"msg":"sucess",status:1});
+            }
+        }
+    );
+});
+
+
+module.exports = router;

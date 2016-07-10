@@ -6,6 +6,9 @@ var Schema = mongoose.Schema;
 var exericeSchema = new Schema({
   type: String,
   exericeId:String,
+  subtype:String,
+  title:String,
+  media : [String],
   discription: String,
   created_at: Date,
   updated_at: Date
