@@ -104,7 +104,7 @@ router.post('/update', function (req, res,next) {
          user.picture = req.body.picture;
              
            user.save(function (err) {
-            if (err) throw err;
+            if (!err){
                user = user.toObject(); // swap for a plain javascript object instance
                delete user["_id"];
                delete user["__v"];
@@ -113,6 +113,10 @@ router.post('/update', function (req, res,next) {
                var updateduser = {user:user,"msg":"sucess",status:1};
                console.log(updateduser);
                 return res.send(updateduser);
+           }else{
+                 return res.send({"msg":"invalid data",status:0,"error":err});
+   
+                     }
                });
          }else{
             return res.send({"msg":"invalid user",status:0});
