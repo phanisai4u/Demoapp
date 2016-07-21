@@ -56,33 +56,7 @@ app.use('/exercies',exercies);
 
 
 
-//app.post('/api/products', function (req, res,next) {
-//  var product;
-//  console.log("POST: ");
-//  console.log(req.body);
-//  product = new ProductModel({
-//    title: req.body.title,
-//    description: req.body.description,
-//  });
-//  product.save(function (err) {
-//    if (!err) {
-//      return res.send(product)
-//
-//    } else {
-//      return res.send(err);
-//    }
-//  });
-//});
-//
-//app.get('/api/products', function (req, res,next) {
-//  return ProductModel.find(function (err, products) {
-//    if (!err) {
-//      return res.send(products);
-//    } else {
-//      return console.log(err);
-//    }
-//  });
-//});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
