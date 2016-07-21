@@ -1,14 +1,6 @@
 var express = require('express');
 var User = require('./models/usermodel');
 
-//var Workouts = require('./models/workoutsmodel');
-
-//var mongoose = require('mongoose');
-  
-//mongoose.connect('mongodb://root:password@ds015962.mlab.com:15962/phanidb');
-
-//mongoose.connect('mongodb://localhost/Demoapp');
-
 var app = express();
 
 //app.createServer();
@@ -20,19 +12,21 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+
+var	routes = require('./routes'),
+	upload = require('./routes/upload'),
+	http = require('http'),
+	path = require('path');
+
+
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var workouts = require('./routes/workouts');
 var exercies = require('./routes/exercie');
+var upload = require('./routes/upload');
 
-//var Schema = mongoose.Schema;
-//var Product = new Schema({
-//    title: { type: String, required: true },
-//    description: { type: String, required: true },
-//    
-//});
-//
-//var ProductModel = mongoose.model('Product', Product);
+
 
 
 // view engine setup
@@ -46,43 +40,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+//app.use(express.bodyParser());
 app.use('/', routes);
 app.use('/users', users);
 app.use('/workouts',workouts);
 app.use('/exercies',exercies);
+app.use('/upload',upload);
 
 
 
-
-
-//app.post('/api/products', function (req, res,next) {
-//  var product;
-//  console.log("POST: ");
-//  console.log(req.body);
-//  product = new ProductModel({
-//    title: req.body.title,
-//    description: req.body.description,
-//  });
-//  product.save(function (err) {
-//    if (!err) {
-//      return res.send(product)
-//
-//    } else {
-//      return res.send(err);
-//    }
-//  });
-//});
-//
-//app.get('/api/products', function (req, res,next) {
-//  return ProductModel.find(function (err, products) {
-//    if (!err) {
-//      return res.send(products);
-//    } else {
-//      return console.log(err);
-//    }
-//  });
-//});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
