@@ -1,19 +1,28 @@
-var Workout = require('../models/workoutsmodel') //require('./models/usermodel.js');
-
+var Workout = require('../models/workoutsmodel'); //require('./models/usermodel.js');
 var express = require('express');
 var router = express.Router();
 
-
+var User = require('../models/usermodel');
 router.post('/add', function (req, res,next) {
   var newworkout;
   console.log("POST: ");
   console.log(req.body);
+ 
   newworkout = new Workout({
     images: req.body.images,
     videos: req.body.videos,
     type : req.body.type,
     title : req.body.title,
-    discription :req.body.discription
+    discription : req.body.discription,
+    name : req.body.name,
+    uploadBy: req.body.uploadBy,
+    subName : req.body.subName,
+    mainMuscle : req.body.mainMuscle,
+    otherMuscles : req.body.otherMuscles,
+    level : req.body.level,
+    sport : req.body.sport,
+    force :  req.body.force,
+    avgRating : req.body.avgRating
   });
   newworkout.save(function (err) {
     if (!err) {
