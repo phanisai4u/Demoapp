@@ -25,7 +25,10 @@ router.post('/create', function (req, res,next) {
   newuser = new User({
     email: req.body.email,
     userId : shortid.generate(),
-    password : req.body.password
+    password : req.body.password,
+    facebookId : req.body.facebookId,
+    googleId : req.body.googleId,
+    accesstoken : req.body.accesstoken
     
   });
   newuser.save(function (err) {
@@ -94,6 +97,8 @@ router.post('/update', function (req, res,next) {
          user.fname = req.body.fname;
          user.dob = req.body.dob;
          user.age = req.body.age;
+         user.adress = req.body.adress;
+         user.mobile = req.body.mobile;
          user.email = req.body.email;
          user.gender =req.body.gender;
          user.height = req.body.height;
