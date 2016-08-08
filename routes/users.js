@@ -179,7 +179,7 @@ router.post('/addgoal', function (req, res,next) {
   
 });
 
-router.post('/fileupload', function (req, res) {
+router.post('/pictureUpload', function (req, res) {
    console.log(req.body.record.name);
  var s3 = new AWS.S3();
     
