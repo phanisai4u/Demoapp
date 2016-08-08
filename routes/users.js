@@ -1,9 +1,14 @@
 var User = require('../models/usermodel'); //require('./models/usermodel.js');
 
-var express = require('express');
+var express = require('express'),
+    AWS = require('aws-sdk'),
+    path = require('path'),
+ 	fs = require('fs');
 var router = express.Router();
 var shortid = require('shortid');
+configPath = path.join(__dirname, '..', "config.json");
 
+ AWS.config.loadFromPath(configPath);
 
 /* GET users listing. */
 //var chris = new User({
@@ -174,5 +179,22 @@ router.post('/addgoal', function (req, res,next) {
   
 });
 
+router.post('/fileupload', function (req, res) {
+   console.log(req.body.record.name);
+ var s3 = new AWS.S3();
+    
+ var params = {  
+     ACL : "public-read",
+     Bucket: 'myfitness',
+     Key: req.body.record.name,
+     Body: fs.createReadStream(req.body.record.path)
+ };
+ s3.upload(params, function(err, data) {
+   if (err) {
+    return res.status(500).send(err);
+   }
+   res.jsonp(data);
+ });
+});
 
 module.exports = router;
