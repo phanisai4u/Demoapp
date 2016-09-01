@@ -12,16 +12,21 @@ var mongoose = require('../db');
 var Schema = mongoose.Schema;
 
 // create a schema
-var goalSchema = new Schema ({
-     type : String,
-     title : String,
-     cycles : String, 
-     days : String ,
-     calToBurn : String,
-     created_at: Date,
-     updated_at: Date
-
-});
+var goalSchema = require('../models/userGoal');
+// new Schema ({
+//     type : String,
+//     title : String,
+//     cycles : String, 
+//     days : String ,
+//     calToBurn : String,
+//     status :Number,
+//     imageUrl:String,
+//     subtype : String,
+//     
+//     created_at: Date,
+//     updated_at: Date
+//
+//});
 
 var userSchema = new Schema({
   userId: { type: String, required: true, unique: true },
