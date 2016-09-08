@@ -149,32 +149,33 @@ router.post('/addgoal', function (req, res,next) {
     
     
     
-    var newgoals = [];
-    for (var i = 0; i < req.body.goals.length; i++) {
-      var obj = req.body.goals[i];
-       var newgoal = new Goal({
-        type : obj.type,
-        title : obj.title,
-        cycles : obj.cycles,
-        days : obj.days,
-        calToBurn : obj.calToBurn,
-        status : obj.status
-       }); 
-    //console.log(newgoal);
-    newgoal.save(function (err){
-        if (err) {
-            
-         return res.send({"msg":"Error",status:0});
-        }else{
-          newgoals.push(newgoal);
-        }
-    });
-        
-    console.log(newgoal);
-
-    }
-
-    console.log(newgoals);
+//    var newgoals = [];
+//    for (var i = 0; i < req.body.goals.length; i++) {
+//      var obj = req.body.goals[i];
+//       var newgoal = new Goal({
+//        type : obj.type,
+//        title : obj.title,
+//        cycles : obj.cycles,
+//        days : obj.days,
+//        calToBurn : obj.calToBurn,
+//        status : obj.status
+//       }); 
+//    //console.log(newgoal);
+//        newgoal.save();
+//        newgoals.push(newgoal);
+//        //    newgoal.save(function (err){
+////        if (err) {
+////            
+////         return res.send({"msg":"Error",status:0});
+////        }else{
+////        }
+////    });
+////        
+//    console.log(newgoal);
+//
+//    }
+//
+//    console.log(newgoals);
 
 //        User.findOne({ userId: req.body.userId }).lean().populate({ path: 'goals' }).exec( function(err, user) {
 //            if (err) return handleError(err);
@@ -185,20 +186,14 @@ router.post('/addgoal', function (req, res,next) {
 //    
     
     
-    User.update({ userId: req.body.userId }, {$push: {goals: {$each:newgoals}}}, {upsert:true}, function(err,user){
+    User.update({ userId: req.body.userId }, {$push: {goals: {$each:req.body.goals}}}, {upsert:true}, function(err,user){
         if (err) return res.send({"msg":"Error",status:0});
         else{
              console.log("Successfully added");
              var query = User.findOne({ userId: req.body.userId })
           query.lean().populate({ path: 'goals' }).exec( function(err, user) {
-      //  console.log(JSON.stringify(user))
             if (!err) {
              if (user != null){
-              // user = user.toObject(); // swap for a plain javascript object instance
-//               delete user["_id"];
-//               delete user["__v"];
-//               delete user["password"];
-              // delete user1["dob"];
                var updateduser = {user:user,"msg":"sucess",status:1};
                console.log(updateduser);
                 return res.send(updateduser);
