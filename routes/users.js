@@ -1,4 +1,6 @@
-var User = require('../models/usermodel'); //require('./models/usermodel.js');
+var UserModel = require('../models/usermodel'); //require('./models/usermodel.js');
+var User = UserModel.User;
+var Goal = UserModel.Goal;
 
 var express = require('express'),
     AWS = require('aws-sdk'),
@@ -144,38 +146,72 @@ router.post('/update', function (req, res,next) {
 });
 
 router.post('/addgoal', function (req, res,next) {
-  console.log("POST: ");
-  console.log(req.body);
-   var query = User.findOne({ userId: req.body.userId })
-                         
-    query.exec( function(err, user) {
-        console.log(JSON.stringify(user))
-       if (!err) {
-         if (user != null){
-         user.goals = req.body.goals;
-         user.save(function (err) {
-            if (err) throw err;
-               user = user.toObject(); // swap for a plain javascript object instance
-               delete user["_id"];
-               delete user["__v"];
-               delete user["password"];
+    
+    
+    
+    var newgoals = [];
+    for (var i = 0; i < req.body.goals.length; i++) {
+      var obj = req.body.goals[i];
+       var newgoal = new Goal({
+        type : obj.type,
+        title : obj.title,
+        cycles : obj.cycles,
+        days : obj.days,
+        calToBurn : obj.calToBurn,
+        status : obj.status
+       }); 
+    //console.log(newgoal);
+    newgoal.save(function (err){
+        if (err) {
+            
+         return res.send({"msg":"Error",status:0});
+        }else{
+          newgoals.push(newgoal);
+        }
+    });
+        
+    console.log(newgoal);
+
+    }
+
+    console.log(newgoals);
+
+//        User.findOne({ userId: req.body.userId }).lean().populate({ path: 'goals' }).exec( function(err, user) {
+//            if (err) return handleError(err);
+//            user.goals.push(newgoal._id);        
+//            user.update();
+//            res.status(200).send({"status":user.toObject()});
+//        });
+//    
+    
+    
+    User.update({ userId: req.body.userId }, {$push: {goals: {$each:newgoals}}}, {upsert:true}, function(err,user){
+        if (err) return res.send({"msg":"Error",status:0});
+        else{
+             console.log("Successfully added");
+             var query = User.findOne({ userId: req.body.userId })
+          query.lean().populate({ path: 'goals' }).exec( function(err, user) {
+      //  console.log(JSON.stringify(user))
+            if (!err) {
+             if (user != null){
+              // user = user.toObject(); // swap for a plain javascript object instance
+//               delete user["_id"];
+//               delete user["__v"];
+//               delete user["password"];
               // delete user1["dob"];
                var updateduser = {user:user,"msg":"sucess",status:1};
                console.log(updateduser);
                 return res.send(updateduser);
-               });
-         }else{
+           }else{
             return res.send({"msg":"invalid user",status:0});
-
-         }
-             
+           }
         }else{
             return res.send({"msg":"Error",status:0});
-  
         }
-        
         });
-    
+            
+            }
+     });
   
 });
 

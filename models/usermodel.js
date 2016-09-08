@@ -10,10 +10,14 @@
 var mongoose = require('../db');
 
 var Schema = mongoose.Schema;
+var shortid = require('shortid');
 
 // create a schema
 var goalSchema = new Schema ({
+     goalid:{type: String, required: false, unique: true },
      type : String,
+     status: String,
+     subType:String,
      title : String,
      cycles : String, 
      days : String ,
@@ -22,6 +26,7 @@ var goalSchema = new Schema ({
      updated_at: Date
 
 });
+var Goal = mongoose.model('Goal', goalSchema);
 
 var userSchema = new Schema({
   userId: { type: String, required: true, unique: true },
@@ -42,7 +47,7 @@ var userSchema = new Schema({
   weight: String,
   fitnesslevel: String,
   activityLevel: String,
-  goals : [goalSchema],
+  goals : [{type: Schema.Types.ObjectId, ref: 'Goal'}],
   created_at: Date,
   updated_at: Date
 });
@@ -67,7 +72,31 @@ userSchema.pre('save', function(next) {
   next();
 })
 
+
+
+goalSchema.pre('save', function(next) {
+  // get the current date
+  var currentDate = new Date();
+  
+  // change the updated_at field to current date
+  this.updated_at = currentDate;
+  
+
+   // if created_at doesn't exist, add to that field
+    if (!this.created_at ){
+        this.goalid = shortid.generate();
+        this.created_at = currentDate;
+     } 
+  next();
+})
+
 var User = mongoose.model('User', userSchema);
 
+
 // make this available to our users in our Node applications
-module.exports = User;
+//module.exports = User;
+
+module.exports = {
+    User: User,
+    Goal: Goal
+};
