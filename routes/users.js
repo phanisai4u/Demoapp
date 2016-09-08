@@ -149,44 +149,36 @@ router.post('/addgoal', function (req, res,next) {
     
     
     
-//    var newgoals = [];
-//    for (var i = 0; i < req.body.goals.length; i++) {
-//      var obj = req.body.goals[i];
-//       var newgoal = new Goal({
-//        type : obj.type,
-//        title : obj.title,
-//        cycles : obj.cycles,
-//        days : obj.days,
-//        calToBurn : obj.calToBurn,
-//        status : obj.status
-//       }); 
-//    //console.log(newgoal);
-//        newgoal.save();
-//        newgoals.push(newgoal);
-//        //    newgoal.save(function (err){
-////        if (err) {
-////            
-////         return res.send({"msg":"Error",status:0});
-////        }else{
-////        }
-////    });
-////        
-//    console.log(newgoal);
-//
-//    }
-//
-//    console.log(newgoals);
+    var newgoals = [];
+    for (var i = 0; i < req.body.goals.length; i++) {
+      var obj = req.body.goals[i];
+       var newgoal = new Goal({
+        type : obj.type,
+        title : obj.title,
+        cycles : obj.cycles,
+        days : obj.days,
+        calToBurn : obj.calToBurn,
+        status : obj.status
+       }); 
+    //console.log(newgoal);
+        newgoal.save();
+        newgoals.push(newgoal);
+        //    newgoal.save(function (err){
+//        if (err) {
+//            
+//         return res.send({"msg":"Error",status:0});
+//        }else{
+//        }
+//    });
+//        
+    console.log(newgoal);
 
-//        User.findOne({ userId: req.body.userId }).lean().populate({ path: 'goals' }).exec( function(err, user) {
-//            if (err) return handleError(err);
-//            user.goals.push(newgoal._id);        
-//            user.update();
-//            res.status(200).send({"status":user.toObject()});
-//        });
-//    
+    }
+
+
     
     
-    User.update({ userId: req.body.userId }, {$push: {goals: {$each:req.body.goals}}}, {upsert:true}, function(err,user){
+    User.update({ userId: req.body.userId }, {$push: {goals: {$each:newgoals}}}, {upsert:true}, function(err,user){
         if (err) return res.send({"msg":"Error",status:0});
         else{
              console.log("Successfully added");
