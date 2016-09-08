@@ -160,24 +160,14 @@ router.post('/addgoal', function (req, res,next) {
         calToBurn : obj.calToBurn,
         status : obj.status
        }); 
-    //console.log(newgoal);
         newgoal.save();
         newgoals.push(newgoal);
-        //    newgoal.save(function (err){
-//        if (err) {
-//            
-//         return res.send({"msg":"Error",status:0});
-//        }else{
-//        }
-//    });
-//        
-    console.log(newgoal);
-
+        console.log(newgoal);
     }
 
 
-    
-    
+ 
+
     User.update({ userId: req.body.userId }, {$push: {goals: {$each:newgoals}}}, {upsert:true}, function(err,user){
         if (err) return res.send({"msg":"Error",status:0});
         else{

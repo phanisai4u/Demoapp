@@ -20,7 +20,7 @@ var goalSchema = new Schema ({
      subType:String,
      title : String,
      cycles : String, 
-     days : String ,
+     days : String,
      calToBurn : String,
      created_at: Date,
      updated_at: Date
