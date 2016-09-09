@@ -12,12 +12,7 @@ configPath = path.join(__dirname, '..', "config.json");
 
  AWS.config.loadFromPath(configPath);
 
-/* GET users listing. */
-//var chris = new User({
-//  name: 'Chris',
-//  username: 'sevilayha',
-//  password: 'password' 
-//});
+
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
@@ -90,8 +85,6 @@ console.log("POST: ");
 });
 
 router.post('/update', function (req, res,next) {
-  console.log("POST: ");
-  console.log(req.body);
    var query = User.findOne({ userId: req.body.userId })
                          
     query.exec( function(err, user) {
@@ -110,7 +103,6 @@ router.post('/update', function (req, res,next) {
          user.gender =req.body.gender;
          user.height = req.body.height;
          user.weight = req.body.weight;
-         user.goals = req.body.goals;
          user.fitnesslevel = req.body.fitnesslevel;
          user.activityLevel = req.body.activityLevel;
          user.picture = req.body.picture;
@@ -188,6 +180,67 @@ router.post('/addgoal', function (req, res,next) {
             }
        });
 
+});
+
+router.post('/removegoal',function(req,res,next){
+    
+    
+    User.update({ userId: req.body.userId }, {$pull: {goals: req.body._id}}, {upsert:true}, function(err,user){
+                   if (err) return res.send({"msg":"Error",status:0});
+                   else{
+                     console.log("Successfully added");
+                     var query = User.findOne({ userId: req.body.userId })
+                     query.lean().populate({ path: 'goals' }).exec( function(err, user) {
+                                          if (!err) {
+                                               if (user != null){
+                                                    var updateduser = {user:user,"msg":"sucess",status:1};
+                                                       console.log(updateduser);
+                                                     return res.send(updateduser);
+                                                }else{
+                                                  return res.send({"msg":"invalid user",status:0});
+                                             }
+                                             }else{
+                                              return res.send({"msg":"Error",status:0});
+                            }
+                           });
+            
+                       }
+               });
+});
+
+
+router.post('/updategoalstatus',function(req,res,next){
+   
+    
+    
+   var query = Goal.findOne({ _id: req.body._id })
+    query.exec( function(err, goal) {
+        console.log ("update ...........")
+        //console.log(JSON.stringify(user))
+       if (!err) {
+         if (goal != null){
+               goal.status = req.body.status;
+                       goal.save(function (err) {
+                         if (!err){
+                           goal = goal.toObject(); // swap for a plain javascript object instance
+                           var updatedgoal = {goal:goal,"msg":"sucess",status:1};
+                           console.log(updatedgoal);
+                           return res.send(updatedgoal);
+                        }else{
+                          return res.send({"msg":"invalid data",status:0,"error":err});
+                        }
+                       });
+          
+         }else{
+            return res.send({"msg":"invalid goal",status:0});
+
+         }
+             
+        }else{
+            return res.send({"msg":"Error",status:0});
+  
+        }
+    });
 });
 
 router.post('/goals', function (req, res,next) {
