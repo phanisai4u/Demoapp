@@ -15,13 +15,14 @@ var shortid = require('shortid');
 // create a schema
 var goalSchema = new Schema ({
      goalid:{type: String, required: false, unique: true },
-     type : String,
+     type : {type: String, required: true},
      status: String,
      subType:String,
-     title : String,
+     title : {type: String, required: true},
      cycles : String, 
      days : String,
-     calToBurn : String,
+     calToBurn : {type: String, required: true},
+     imageurl :String,
      created_at: Date,
      updated_at: Date
 
@@ -87,7 +88,8 @@ goalSchema.pre('save', function(next) {
         this.goalid = shortid.generate();
         this.created_at = currentDate;
      } 
-  next();
+      next();
+
 })
 
 var User = mongoose.model('User', userSchema);

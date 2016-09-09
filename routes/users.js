@@ -147,50 +147,67 @@ router.post('/update', function (req, res,next) {
 
 router.post('/addgoal', function (req, res,next) {
     
-    
-    
-    var newgoals = [];
-    for (var i = 0; i < req.body.goals.length; i++) {
-      var obj = req.body.goals[i];
+       var obj = req.body.goal
        var newgoal = new Goal({
         type : obj.type,
         title : obj.title,
         cycles : obj.cycles,
         days : obj.days,
         calToBurn : obj.calToBurn,
-        status : obj.status
+        status : obj.status,
+        imageurl:obj.imageurl,
+        subType : obj.subType
        }); 
-        newgoal.save();
-        newgoals.push(newgoal);
-        console.log(newgoal);
-    }
 
-
- 
-
-    User.update({ userId: req.body.userId }, {$push: {goals: {$each:newgoals}}}, {upsert:true}, function(err,user){
-        if (err) return res.send({"msg":"Error",status:0});
-        else{
-             console.log("Successfully added");
-             var query = User.findOne({ userId: req.body.userId })
-          query.lean().populate({ path: 'goals' }).exec( function(err, user) {
-            if (!err) {
-             if (user != null){
-               var updateduser = {user:user,"msg":"sucess",status:1};
-               console.log(updateduser);
-                return res.send(updateduser);
-           }else{
-            return res.send({"msg":"invalid user",status:0});
-           }
-        }else{
-            return res.send({"msg":"Error",status:0});
-        }
-        });
+      newgoal.save(function (err) {
+         if (err){
+                return res.send({"msg":"Invalid data",status:0});
+         }else{
+            User.update({ userId: req.body.userId }, {$push: {goals: {$each:[newgoal]}}}, {upsert:true}, function(err,user){
+                   if (err) return res.send({"msg":"Error",status:0});
+                   else{
+                     console.log("Successfully added");
+                     var query = User.findOne({ userId: req.body.userId })
+                     query.lean().populate({ path: 'goals' }).exec( function(err, user) {
+                                          if (!err) {
+                                               if (user != null){
+                                                    var updateduser = {user:user,"msg":"sucess",status:1};
+                                                       console.log(updateduser);
+                                                     return res.send(updateduser);
+                                                }else{
+                                                  return res.send({"msg":"invalid user",status:0});
+                                             }
+                                             }else{
+                                              return res.send({"msg":"Error",status:0});
+                            }
+                           });
             
+                       }
+               });
+                
             }
-     });
-  
+       });
+
 });
+
+router.post('/goals', function (req, res,next) {
+    
+    var query = User.findOne({ userId: req.body.userId })
+    query.lean().populate({ path: 'goals' }).exec( function(err, user) {
+                if (!err) {
+                    if (user != null){
+                        var updateduser = {user:user,"msg":"sucess",status:1};
+                        console.log(updateduser);
+                         return res.send(updateduser);
+                      }else{
+                                return res.send({"msg":"invalid user",status:0});
+                        }
+                }else{
+                    return res.send({"msg":"Error",status:0});
+                }
+     });
+});
+
 
 router.post('/pictureUpload', function (req, res) {
    console.log(req.body.record.name);
