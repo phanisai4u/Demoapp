@@ -1,6 +1,7 @@
 var UserModel = require('../models/usermodel'); //require('./models/usermodel.js');
 var User = UserModel.User;
 var Goal = UserModel.Goal;
+var GoalEvent = UserModel.GoalEvent;
 
 var express = require('express'),
     AWS = require('aws-sdk'),
@@ -259,6 +260,63 @@ router.post('/goals', function (req, res,next) {
                     return res.send({"msg":"Error",status:0});
                 }
      });
+});
+
+router.post('/addgoalevent', function (req, res) {
+var query = Goal.findOne({ _id: req.body._id })
+    query.exec( function(err, goal) {
+       if (!err) {
+         if (goal != null){  
+               var newGoalEvent = new GoalEvent({
+                goalData: goal._id,
+                burnedCal : req.body.burnedCal,
+                duration : req.body.duration
+              });
+              newGoalEvent.save(function (err) {
+                if (!err) {
+                     GoalEvent.find({goalData:req.body._id}, function (err, goalevetns) {
+                         if (!err){
+                           var dataforresponse = {"goal":goal,"goalEvents":goalevetns,"msg":"sucess",status:1};
+                           return res.send(dataforresponse); 
+                         }else{
+                           var dataforresponse = {"goal":goal,"goalEvents":[],"msg":"sucess",status:1};
+                           return res.send(dataforresponse);    
+                         }
+                      });
+                } else {
+                  return res.send({"msg":"error while updateing",status:0});
+                }
+                });  
+        }else{
+            return res.send({"msg":"invaild goal Id",status:0});
+        }
+    }else{
+            return res.send({"msg":"invaild goal Id",status:0});
+        }
+    });
+});
+
+router.post('/getgoalevents', function (req, res) {
+var query = Goal.findOne({ _id: req.body._id })
+    query.exec( function(err, goal) {
+       if (!err) {
+         if (goal != null){  
+            GoalEvent.find({goalData:req.body._id}, function (err, goalevetns) {
+                if (!err){
+                var dataforresponse = {"goal":goal,"goalEvents":goalevetns,"msg":"sucess",status:1};
+                return res.send(dataforresponse); 
+                }else{
+                var dataforresponse = {"goal":goal,"goalEvents":[],"msg":"sucess",status:1};
+                return res.send(dataforresponse); 
+                }
+            });
+            } else{
+            return res.send({"msg":"invaild goal Id",status:0});
+            }
+        }else{
+            return res.send({"msg":"error",status:0});
+        }
+    });
 });
 
 

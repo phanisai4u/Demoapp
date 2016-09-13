@@ -27,7 +27,17 @@ var goalSchema = new Schema ({
      updated_at: Date
 
 });
+
+var goalEvent = new Schema ({
+     goalData:{type: Schema.Types.ObjectId, ref: 'Goal'},
+     duration : Number,
+     burnedCal : {type: Number, required: true},
+     created_at: Number
+
+});
 var Goal = mongoose.model('Goal', goalSchema);
+var GoalEvent = mongoose.model('GoalEvent', goalEvent);
+
 
 var userSchema = new Schema({
   userId: { type: String, required: true, unique: true },
@@ -67,12 +77,23 @@ userSchema.pre('save', function(next) {
    // if created_at doesn't exist, add to that field
  if (!this.created_at ) 
     this.created_at = currentDate;
-  
     
 
   next();
 })
 
+goalEvent.pre('save', function(next) {
+ 
+  var currentDate = new Date();
+
+   // if created_at doesn't exist, add to that field
+ if (!this.created_at ) 
+    this.created_at = currentDate.getMilliseconds;
+  
+    
+
+  next();
+})
 
 
 goalSchema.pre('save', function(next) {
@@ -100,5 +121,6 @@ var User = mongoose.model('User', userSchema);
 
 module.exports = {
     User: User,
-    Goal: Goal
+    Goal: Goal,
+    GoalEvent:GoalEvent
 };
