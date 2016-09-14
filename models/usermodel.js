@@ -21,22 +21,27 @@ var goalSchema = new Schema ({
      title : {type: String, required: true},
      cycles : String, 
      days : String,
+     distance:Number,
      calToBurn : {type: String, required: true},
+     totalcalBurned:Number,
+     totalDuration:Number,
+     totalDistance:Number,
      imageurl :String,
      created_at: Date,
      updated_at: Date
 
 });
 
-var goalEvent = new Schema ({
+var goalEventSchema = new Schema ({
      goalData:{type: Schema.Types.ObjectId, ref: 'Goal'},
      duration : Number,
      burnedCal : {type: Number, required: true},
-     created_at: Number
+     distance :Number,
+     created_at: Date
 
 });
 var Goal = mongoose.model('Goal', goalSchema);
-var GoalEvent = mongoose.model('GoalEvent', goalEvent);
+var GoalEvent = mongoose.model('GoalEvent', goalEventSchema);
 
 
 var userSchema = new Schema({
@@ -82,16 +87,14 @@ userSchema.pre('save', function(next) {
   next();
 })
 
-goalEvent.pre('save', function(next) {
+goalEventSchema.pre('save', function(next) {
  
   var currentDate = new Date();
 
    // if created_at doesn't exist, add to that field
- if (!this.created_at ) 
-    this.created_at = currentDate.getMilliseconds;
-  
+   if (!this.created_at ) 
+    this.created_at = currentDate;
     
-
   next();
 })
 
@@ -108,6 +111,9 @@ goalSchema.pre('save', function(next) {
     if (!this.created_at ){
         this.goalid = shortid.generate();
         this.created_at = currentDate;
+        this.totalcalBurned = 0;
+        this.totalDistance = 0;
+        this.totalDuration = 0;
      } 
       next();
 

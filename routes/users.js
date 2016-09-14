@@ -270,11 +270,18 @@ var query = Goal.findOne({ _id: req.body._id })
                var newGoalEvent = new GoalEvent({
                 goalData: goal._id,
                 burnedCal : req.body.burnedCal,
-                duration : req.body.duration
+                duration : req.body.duration,
+                distance : req.body.distance
               });
-              newGoalEvent.save(function (err) {
-                if (!err) {
-                     GoalEvent.find({goalData:req.body._id}, function (err, goalevetns) {
+            goal.totalcalBurned = goal.totalcalBurned + req.body.burnedCal;
+            goal.totalDuration = goal.totalDuration + req.body.duration;
+            goal.totalDistance = goal.totalDistance + req.body.distance;
+            
+             goal.save(function(err){
+                if (!err){
+                 newGoalEvent.save(function (err) {
+                     if (!err) {
+                        GoalEvent.find({goalData:req.body._id}, function (err, goalevetns) {
                          if (!err){
                            var dataforresponse = {"goal":goal,"goalEvents":goalevetns,"msg":"sucess",status:1};
                            return res.send(dataforresponse); 
@@ -283,10 +290,14 @@ var query = Goal.findOne({ _id: req.body._id })
                            return res.send(dataforresponse);    
                          }
                       });
-                } else {
-                  return res.send({"msg":"error while updateing",status:0});
+                      } else {
+                     return res.send({"msg":"error while updateing",status:0});
+                    }
+                   });
+                }else{
+                  return res.send({"msg":err,status:0});
                 }
-                });  
+         });
         }else{
             return res.send({"msg":"invaild goal Id",status:0});
         }
